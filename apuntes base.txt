@@ -1,0 +1,23 @@
+Estructura de datos  que mejora la velocidad de operacion por medio de un identificador unico
+Vistas:
+Consultas====>tablavirtual
+
+ transacciones en base de datos:
+Una transacción en base de datos es un conjunto de órdenes que se ejecutan formando una unidad de trabajo indivisible o atómica
+
+Tipos de integridad de datos
+Existen dos tipos de integridad de datos que describen los diferentes procesos que utilizan las empresas para garantizar la integridad de los datos en las bases de datos. Las bases de datos relacionales son estructuras simples que representan los datos en tablas, mientras que las bases de datos jerárquicas utilizan una estructura compleja en forma de árbol para almacenar los datos como registros. Ambas bases de datos requieren procesos que hagan cumplir ambos tipos de integridad de los datos, que incluyen:
+
+Integridad física
+La integridad física se refiere a los métodos que utilizan las organizaciones para garantizar que pueden almacenar y recuperar los datos en su forma completa y precisa. Para que los gestores de datos puedan obtener los datos de una empresa, ésta debe evitar que cualquier factor afecte a la integridad física de los datos e impida el acceso. Los eventos inesperados, como los desastres naturales y los cortes de energía, pueden afectar a la integridad física, por lo que es importante que los profesionales de datos prevengan los problemas tomando medidas para proteger y mantener la seguridad de los datos.
+
+Integridad lógica
+Mientras que la integridad física implica la capacidad de almacenar y obtener datos precisos, la integridad lógica se refiere a la exactitud y coherencia de los propios datos. La integridad lógica garantiza que los datos tengan sentido en su contexto. Los tipos de integridad lógica son los siguientes:
+
+Integridad de la entidad: Los profesionales de los datos crean claves primarias para puntos de datos individuales, que los diferencian de otros. Esto evita la duplicación de datos y las tablas nulas, que no tienen valor, en las bases de datos relacionales.
+
+Integridad del dominio: La integridad del dominio garantiza la exactitud de cada dato en un dominio, o un conjunto de valores aceptables. También puede incluir restricciones que restrinjan ciertos tipos de datos.
+
+Integridad referencial: La integridad referencial garantiza el correcto almacenamiento y uso de los datos. También puede contener restricciones que eviten la duplicación de datos, las imprecisiones o los datos irrelevantes.
+
+Integridad definida por el usuario: Los usuarios pueden definir sus propios procesos para la integridad del sistema. La integridad definida por el usuario puede ayudar a reforzar otras medidas de integridad de los datos.  
