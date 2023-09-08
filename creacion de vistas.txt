@@ -1,0 +1,80 @@
+"creacion de vistas"
+drop table empleados;
+ drop table secciones;
+
+create table secciones(
+  codigo number(2),
+  nombre varchar2(20),
+  sueldo number(5,2)
+   constraint CK_secciones_sueldo check (sueldo>=0),
+  constraint PK_secciones primary key (codigo)
+ );
+ create table empleados(
+  legajo number(5),
+  documento char(8),
+  sexo char(1)
+   constraint CK_empleados_sexo check (sexo in ('f','m')),
+  apellido varchar2(20),
+  nombre varchar2(20),
+  domicilio varchar2(30),
+  seccion number(2) not null,
+  cantidadhijos number(2)
+   constraint CK_empleados_hijos check (cantidadhijos>=0),
+  estadocivil char(10)
+   constraint CK_empleados_estadocivil check (estadocivil in ('casado','divorciado','soltero','viudo','unionlibre')),
+  fechaingreso date,
+   constraint PK_empleados primary key (legajo),
+  constraint FK_empleados_seccion
+   foreign key (seccion)
+   references secciones(codigo),
+  constraint UQ_empleados_documento
+   unique(documento)
+);
+insert into secciones values(1,'Administracion',300);
+ insert into secciones values(2,'Contaduría',400);
+ insert into secciones values(3,'Sistemas',500);
+
+ insert into empleados values(100,'22222222','f','Lopez','Ana','Colon 123',1,2,'unionlibre',(to_date('1990/10/10','yyyy/mm/dd hh:mi:ss')));
+ insert into empleados values(102,'23333333','m','Lopez','Luis','Sucre 235',1,0,'soltero',(to_date('1990/10/02','yyyy/mm/dd hh:mi:ss')));
+ insert into empleados values(103,'24444444','m','Garcia','Marcos','Sarmiento 1234',2,3,'divorciado',(to_date('1998/07/12','yyyy/mm/dd hh:mi:ss')));
+ insert into empleados values(104,'25555555','m','Gomez','Pablo','Bulnes 321',3,2,'casado',(to_date('1998/09/10','yyyy/mm/dd hh:mi:ss')));
+ insert into empleados values(105,'26666666','f','Perez','Laura','Peru 1254',3,3,'casado',(to_date('2000/09/05','yyyy/mm/dd hh:mi:ss')));
+select * from empleados;
+select * from secciones;
+drop view vista_empleados;
+create view vista_empleados as
+  select (apellido||' '||e.nombre) as nombre,sexo,
+   s.nombre as seccion, cantidadhijos, estadocivil
+   from empleados e
+   join secciones s
+   on codigo=seccion;
+
+select *from vista_empleados;
+
+select seccion,count(*) as cantidad
+  from vista_empleados
+  group by seccion;
+
+ create view vista_empleados_ingreso (fecha,cantidad)
+  as
+  select extract(year from fechaingreso),count(*)
+   from empleados
+   group by extract(year from fechaingreso);
+
+ select *from vista_empleados_ingreso;
+
+update empleados set fechaingreso=(to_date('2000/09/05','yyyy/mm/dd hh:mi:ss')) where fechaingreso=(to_date('1998/09/10','yyyy/mm/dd hh:mi:ss'));
+
+ select *from vista_empleados_ingreso;
+  
+create view empleadosecciones AS (vista_empleados) 
+select nombre, domicilio, estadocivil, seccion, fechaingreso
+from empleados, secciones
+wher seccion.codigo=empleado.seccion
+select * from EmpleadoSecciones;
+
+create view empleadosecciones AS
+select e.nombre, e.domicilio, e.estadocivil, seccion, e.fechaingreso
+from empleados e, secciones s
+where s.codigo = e.seccion
+and e.estadocivil = 'divorciado';
