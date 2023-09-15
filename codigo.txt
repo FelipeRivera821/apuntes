@@ -1,0 +1,39 @@
+create table puesto(
+    nombre_puesto varchar2(40),
+    cod_puesto number(2),
+    constraint PK_puesto primary key (nombre_puesto),
+    constraint UQ_puesto_cod_puesto
+     unique(cod_puesto)
+);
+drop table puesto;
+create table empleados(
+num_emp number(13),
+nombre_emp varchar2(45),
+puestos varchar2(35),
+constraint PK_empleados primary key (num_emp),
+constraint FK_puesto_puestos
+foreign key (puestos)
+references puesto(nombre_puesto)
+);
+
+create table proyecto(
+    num_proyect number(6),
+    nombre_proyect varchar2(40),
+    lider number(13),
+    constraint PK_proyecto primary key (num_proyect),
+     constraint FK_proyecto_lider
+    foreign key (lider)
+   references empleados(num_emp),
+    constraint UQ_proyecto_nombre_proyect
+     unique(nombre_proyect)
+);
+
+insert into puesto values('ingeniero electricista','1');
+    insert into  puesto values('disenador de base de datos','2');
+ insert into puesto values('programador','3');
+ insert into puesto values('analista de sistemas','4');
+ insert into puesto values('disenador de sistemas','5');
+ insert into puesto values('apoyo general','6');
+ insert into puesto values('analista DSS','7');
+ insert into puesto values('trabajo de oficina','8');
+    
