@@ -1,0 +1,101 @@
+create table puesto(
+    nombre_puesto varchar2(50)not null,
+    cod_puesto number(3),
+    Cargoporhora number(6,2)not null,
+    constraint PK_puesto primary key (nombre_puesto),
+    constraint UQ_puesto_cod_puesto
+     unique(cod_puesto)
+);
+
+create table empleados(
+num_emp number(13),
+nombre_emp varchar2(50)not null,
+puestos number(2)not null,
+constraint PK_empleados primary key (num_emp),
+constraint FK_puesto_puestos
+foreign key (puestos)
+references puesto(cod_puesto)
+);
+
+create table proyecto(
+    num_proyect number(6),
+    nombre_proyect varchar2(40),
+    lider number(13),
+    constraint PK_proyecto primary key (num_proyect),
+     constraint FK_proyecto_lider
+    foreign key (lider)
+   references empleados(num_emp),
+    constraint UQ_proyecto_nombre_proyect
+     unique(nombre_proyect)
+);
+create table asignacion(
+    
+);
+
+insert into puesto values('ingeniero electricista','1','84.50');
+    insert into  puesto values('disenador de base de datos','2','105.00');
+ insert into puesto values('programador','3','35.75');
+ insert into puesto values('analista de sistemas','4','96.75');
+ insert into puesto values('disenador de aplicaciones','5','48.10');
+ insert into puesto values('apoyo general','6','18.36');
+ insert into puesto values('analista DSS','7','45.95');
+ insert into puesto values('trabajo de oficina','8','26.87');
+
+insert into empleados values('101','John G News','2');
+insert into empleados values('102','David H Senior','4');
+insert into empleados values('103','June E Arbough','1');
+insert into empleados values('104','Anne K Ramoras','4');
+insert into empleados values('105','Alice K Johnson','2');
+insert into empleados values('106','William Smithfield','3');
+insert into empleados values('107','Maria D Alonzo','3');
+insert into empleados values('108','Ralph B Washington','4');
+insert into empleados values('111','Geoff B Wabash','8');
+insert into empleados values('112','Darlene M Smithson','7');
+insert into empleados values('113','Delbert K Joenbrood','5');
+insert into empleados values('114','Annelise Jones','5');
+insert into empleados values('115','Travis B Bawangi','4');
+insert into empleados values('118','James J Frommer','6');
+
+insert into proyecto values('15','Evergreen','105');
+insert into empleados values('101','John G News','2');
+insert into empleados values('102','David H Senior','4');
+insert into empleados values('103','June E Arbough','1');
+insert into empleados values('104','Anne K Ramoras'),'4';
+insert into empleados values('105','Alice K Johnson','2');
+insert into empleados values('106','William Smithfield','3');
+insert into empleados values('107','Maria D Alonzo','3');
+insert into empleados values('108','Ralph B Washington','4');
+insert into empleados values('111','Geoff B Wabash','8');
+insert into empleados values('112','Darlene M Smithson','7');
+insert into empleados values('113','Delbert K Joenbrood','5');
+insert into empleados values('114','Annelise Jones','5');
+insert into empleados values('115','Travis B Bawangi','4');
+insert into empleados values('118','James J Frommer','6');
+
+
+insert into empleados values('101','John G News','2');
+insert into empleados values('102','David H Senior','4');
+insert into empleados values('103','June E Arbough','1');
+insert into empleados values('104','Anne K Ramoras'),'4';
+insert into empleados values('105','Alice K Johnson','2');
+insert into empleados values('106','William Smithfield','3');
+insert into empleados values('107','Maria D Alonzo','3');
+insert into empleados values('108','Ralph B Washington','4');
+insert into empleados values('111','Geoff B Wabash','8');
+insert into empleados values('112','Darlene M Smithson','7');
+insert into empleados values('113','Delbert K Joenbrood','5');
+insert into empleados values('114','Annelise Jones','5');
+insert into empleados values('115','Travis B Bawangi','4');
+insert into empleados values('118','James J Frommer','6');
+
+
+insert into proyecto values('15','Evergreen','105');
+insert into proyecto values('18','Amber Wave','104');
+insert into proyecto values('22','Rolling Tide','113');
+insert into proyecto values('25','Starflight','101');
+
+
+
+select * from puesto;
+select * from empleados;
+select * from proyecto;
