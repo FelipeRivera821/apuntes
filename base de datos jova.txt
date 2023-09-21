@@ -1,0 +1,10 @@
+create table informacion(
+    -> Nombre VARCHAR(20),
+    -> Apellido VARCHAR(40),
+    -> Fecha DATE,
+    -> Sexo VARCHAR(10),
+    -> Skills VARCHAR(60),
+    -> Imagen VARCHAR(250),
+    -> Carrera VARCHAR(40),
+    -> Texto VARCHAR(100));
+
