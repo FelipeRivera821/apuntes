@@ -1,0 +1,123 @@
+create table puesto(
+    nombre_puesto varchar2(50)not null,
+    cod_puesto number(3),
+    Cargoporhora number(6,2)not null,
+    constraint PK_puesto primary key (nombre_puesto),
+    constraint UQ_puesto_cod_puesto
+     unique(cod_puesto)
+);
+create table empleados(
+num_emp number(3),
+nombre_emp varchar2(50)not null,
+puestos number(2)not null,
+constraint PK_empleados primary key (num_emp),
+constraint FK_puesto_puestos
+foreign key (puestos)
+references puesto(cod_puesto)
+);
+
+create table proyecto(
+    num_proyect number(6),
+    nombre_proyect varchar2(40),
+    lider number(13),
+    constraint PK_proyecto primary key (num_proyect),
+     constraint FK_proyecto_lider
+    foreign key (lider)
+   references empleados(num_emp),
+    constraint UQ_proyecto_nombre_proyect
+     unique(nombre_proyect)
+);
+
+
+create table asignacion(
+    empleado number(3),
+    numproyecto number(6),
+    horascobradas number(6, 2)not null,
+     Constraint PK_asignacion PRIMARY KEY(empleado,numproyecto),
+     Constraint FK_empleados FOREIGN KEY (empleado)
+    References empleados(num_emp),
+ Constraint FK_asignacion_numproyecto
+    FOREIGN KEY (numproyecto)
+    References proyecto(num_proyect)
+);
+
+
+insert into puesto values('ingeniero electricista','1','84.50');
+insert into puesto values('disenador de base de datos','2','105.00');
+insert into puesto values('programador','3','35.75');
+insert into puesto values('analista de sistemas','4','96.75');
+insert into puesto values('disenador de aplicaciones','5','48.10');
+insert into puesto values('apoyo general','6','18.36');
+insert into puesto values('analista DSS','7','45.95');
+insert into puesto values('trabajo de oficina','8','26.87');
+
+
+insert into empleados values(101,'John G News',2);
+insert into empleados values(102,'David H Senior',4);
+insert into empleados values(103,'June E Arbough',1);
+insert into empleados values(104,'Anne K Ramoras',4);
+insert into empleados values(105,'Alice K Johnson',2);
+insert into empleados values(106,'William Smithfield',3);
+insert into empleados values(107,'Maria D Alonzo',3);
+insert into empleados values(108,'Ralph B Washington',4);
+insert into empleados values(111,'Geoff B Wabash',8);
+insert into empleados values(112,'Darlene M Smithson',7);
+insert into empleados values(113,'Delbert K Joenbrood',5);
+insert into empleados values(114,'Annelise Jones',5);
+insert into empleados values(115,'Travis B Bawangi',4);
+insert into empleados values(118,'James J Frommer',6);
+
+insert into proyecto values('15','Evergreen','105');
+insert into proyecto values('18','Amber Wave','104');
+insert into proyecto values('22','Rolling Tide','113');
+insert into proyecto values('25','Starflight','101');
+
+insert into asignacion values(101,'15','19.4');
+insert into asignacion values(101,'25','56.3');
+insert into asignacion values(102,'15','23.8');
+insert into asignacion values(103,'15','23.8');
+insert into asignacion values(104,'18','32.4');
+insert into asignacion values(104,'22','48.4');
+insert into asignacion values(105,'22','64.7');
+insert into asignacion values(105,'15','35.7');
+insert into asignacion values(106,'15','12.8');
+insert into asignacion values(106,'22','12.8');
+insert into asignacion values(107,'25','24.6');
+insert into asignacion values(108,'25','23.6');
+insert into asignacion values(111,'22','22.0');
+insert into asignacion values(112,'18','44.0');
+insert into asignacion values(112,'25','41.4');
+insert into asignacion values(113,'22','23.6');
+insert into asignacion values(114,'18','24.6');
+insert into asignacion values(114,'25','33.1');
+insert into asignacion values(115,'25','45.8');
+insert into asignacion values(118,'18','45.3');
+insert into asignacion values(118,'25','30.5');
+
+SELECT P.nombre_proyect, E.nombre_emp
+FROM proyecto P
+INNER JOIN asignacion A ON P.num_proyect = A.numproyecto
+INNER JOIN empleados E ON A.empleado = E.num_emp
+WHERE E.num_emp = 105;
+
+select e.nombre_emp as "Nombre del empleado", p.nombre_puesto as puesto
+from puesto p
+inner join empleados e on e.puestos = p.cod_puesto
+where p.nombre_puesto = 'programador';
+
+select count(e.nombre_emp) as cantidad ,p.nombre_puesto as puesto
+from puesto p
+inner join empleados e on e.puestos = p.cod_puesto
+where p.nombre_puesto = 'analista de sistemas'
+group by p.nombre_puesto;
+
+
+SELECT e.nombre_emp AS "Nombre del Empleado",
+       p.nombre_puesto AS "Cargo",
+      (p.Cargoporhora * a.horascobradas) AS "Cargo Total",
+      pr.nombre_proyect AS "Nombre del Proyecto"
+FROM empleados e
+INNER JOIN puesto p ON e.puestos = p.cod_puesto
+INNER JOIN asignacion a ON e.num_emp = a.empleado
+INNER JOIN proyecto pr ON a.numproyecto = pr.num_proyect
+WHERE  e.num_emp = 105;
