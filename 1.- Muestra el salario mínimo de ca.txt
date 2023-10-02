@@ -1,0 +1,23 @@
+1.- Muestra el salario mínimo de cada proyecto:
+
+SELECT Num_Proyect, MIN(Cargoxhora) as Salario_Minimo
+FROM Proyecto
+JOIN Empleado ON Proyecto.Lider = Empleado.Num_Emp
+JOIN Puesto ON Empleado.ClavePuesto = Puesto.Clave_Puesto
+GROUP BY Num_Proyect;
+
+2.- Muestra el promedio del salario y en promedio cuanto gana cada tipo de empleado:
+
+SELECT Puesto.Nombre_Puesto, AVG(Cargoxhora) as Promedio_Salario
+FROM Empleado
+JOIN Puesto ON Empleado.ClavePuesto = Puesto.Clave_Puesto
+GROUP BY Puesto.Nombre_Puesto;
+
+3.- Muestra los empleados que superan el promedio de salario del proyecto "rolling tide":
+
+SELECT Empleado.Nombre_Emp
+FROM Empleado
+JOIN Asignacion ON Empleado.Num_Emp = Asignacion.NumEmp
+JOIN Proyecto ON Asignacion.NumProyect = Proyecto.Num_Proyect
+WHERE Proyecto.Nombre_Proyect = 'rolling tide' AND Empleado.ClavePuesto = (SELECT ClavePuesto FROM Empleado JOIN Proyecto ON Empleado.Num_Emp = Proyecto.Lider WHERE Proyecto.Nombre_Proyect = 'rolling tide')
+HAVING SUM(Asignacion.Horas_Cobradas * Puesto.Cargoxhora) > (SELECT AVG(Asignacion.Horas_Cobradas * Puesto.Cargoxhora) FROM Empleado JOIN Asignacion ON Empleado.Num_Emp = Asignacion.NumEmp JOIN Puesto ON Empleado.ClavePuesto = Puesto.Clave_Puesto JOIN Proyecto ON Asignacion.NumProyect = Proyecto.Num_Proyect WHERE Proyecto.Nombre_Proyect = 'rolling tide');

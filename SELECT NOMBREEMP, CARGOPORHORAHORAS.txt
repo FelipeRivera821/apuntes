@@ -1,0 +1,14 @@
+SELECT NOMBREEMP, CARGOPORHORA*HORAS_COBRADAS AS Total
+FROM Puesto, Asignacion, Empleado, Proyecto
+WHERE Proyecto.NUM_PROYECT = Asignacion.NUM_PROYEC
+AND Empleado.NUMEMP = Asignacion.EMP
+AND Puesto.CUEPUESTO = Empleado.PUESTOS
+AND CARGOPORHORA*HORAS_COBRADAS >
+(
+    SELECT AVG(CARGOPORHORA*HORAS_COBRADAS) AS Promedio
+    FROM Puesto, Asignacion, Empleado, Proyecto
+    WHERE Proyecto.NUM_PROYECT = Asignacion.NUM_PROYEC
+    AND Empleado.NUMEMP = Asignacion.EMP
+    AND Puesto.CUEPUESTO = Empleado.PUESTOS
+    AND NOMBRE_PROYECTO = 'Rolling Tide'
+);
