@@ -1,0 +1,27 @@
+declare
+v_nombre_emp varchar2(50);
+v_nombre_puesto empleados.puestos%type;
+v_Cargoporhora puesto.Cargoporhora%type;
+begin
+select e.nombre_emp, e.puestos, p.Cargoporhora
+into v_nombre_emp, v_nombre_puesto, v_Cargoporhora
+from empleados e , puesto p
+WHERE e.puestos = p.cod_puesto and e.num_emp = 105;
+DBMS_OUTPUT.PUT_LINE(' Nombre = ' || v_nombre_emp || ' Numero del Puesto = ' || v_nombre_puesto || ' Cargo por Hora = ' || v_Cargoporhora);
+end;
+/
+
+
+BEGIN
+FOR someone in (
+    select e.nombre_emp, e.puestos, p.Cargoporhora
+    from empleados e, puesto p
+    where e.puestos = p.cod_puesto and p.nombre_puesto = 'programador'
+order by e.nombre_emp
+    )
+    LOOP
+    DBMS_OUTPUT.PUT_LINE(' Nombre = ' || someone.nombre_emp || ' numero del Puesto = ' || someone.puestos || ' Cargo por Hora = ' || someone.Cargoporhora);
+END LOOP;
+END;
+/
+    
