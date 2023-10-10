@@ -1,0 +1,24 @@
+declare
+  salario puesto.Cargoporhora%type;
+  promedio number(6,2);
+  comparacion BOOLEAN;
+begin
+  select (p.Cargoporhora * a.horascobradas) AS salario
+  into salario
+  from puesto p, asignacion a, empleados e
+  where e.puestos = p.cod_puesto and a.empleado = e.num_emp and e.num_emp = 105;
+
+  select AVG(p.Cargoporhora * a.horascobradas) as promedio
+  into promedio
+  from puesto p, asignacion a, empleados e
+  where e.puestos = p.cod_puesto and a.empleado = e.num_emp and e.num_emp = 105
+  group by e.num_emp;
+
+  comparacion := salario < promedio;
+  if comparacion = True then
+    DBMS_OUTPUT.PUT_LINE('El salario es mayor');
+  else
+    DBMS_OUTPUT.PUT_LINE('El salario es menor o igual');
+  end if;
+end;
+/
