@@ -6,9 +6,8 @@ create table puesto(
     constraint UQ_puesto_cod_puesto
      unique(cod_puesto)
 );
-
 create table empleados(
-num_emp number(13),
+num_emp number(3),
 nombre_emp varchar2(50)not null,
 puestos number(2)not null,
 constraint PK_empleados primary key (num_emp),
@@ -32,16 +31,18 @@ create table proyecto(
 
 create table asignacion(
     empleado number(3),
-    numproyecto number(2),
-    horascobradas number(6,2)not null,
-    fechainicio date not null,
-    fechatermino date not null,
+    numproyecto number(6),
+    horascobradas number(5, 2)not null,
+    fechainicio date,
+    fechatermino date,
      Constraint PK_asignacion PRIMARY KEY(empleado,numproyecto),
      Constraint FK_empleados FOREIGN KEY (empleado)
     References empleados(num_emp),
- Constraint FK_proyecto FOREIGN KEY (numproyecto)
+ Constraint FK_asignacion_numproyecto
+    FOREIGN KEY (numproyecto)
     References proyecto(num_proyect)
 );
+
 
 insert into puesto values('ingeniero electricista','1','84.50');
 insert into puesto values('disenador de base de datos','2','105.00');
@@ -68,35 +69,142 @@ insert into empleados values(114,'Annelise Jones',5);
 insert into empleados values(115,'Travis B Bawangi',4);
 insert into empleados values(118,'James J Frommer',6);
 
-
 insert into proyecto values('15','Evergreen','105');
 insert into proyecto values('18','Amber Wave','104');
 insert into proyecto values('22','Rolling Tide','113');
 insert into proyecto values('25','Starflight','101');
 
-SELECT P.NombreProyecto, E.NompreEmpledo
-FROM Proyecto P
-INNER JOIN Asignacion A ON P.NumeroProyecto = A.NumeroProyecto
-INNER JOIN Empleado E ON A.Empleado = E.NumeroEmpleado
-WHERE E.NumeroEmpleado = 105;
+insert into asignacion values('101','15','19.4', DATE'2020-2-23',DATE'2020-11-12');
+insert into asignacion values('101','25','56.3', DATE'2019-9-1',DATE'2019-12-20');
+insert into asignacion values('102','15','23.8', DATE'2020-2-23',DATE'2020-11-12');
+insert into asignacion values('103','15','23.8', DATE'2020-2-23',DATE'2020-11-12');
+insert into asignacion values('104','18','32.4', DATE'2018-6-13',DATE'2018-12-16');
+insert into asignacion values('104','22','48.4', DATE'2017-1-7',DATE'2017-4-30');
+insert into asignacion values('105','22','64.7', DATE'2020-2-23',DATE'2020-11-12');
+insert into asignacion values('105','15','35.7', DATE'2017-1-7',DATE'2017-4-30');
+insert into asignacion values('106','15','12.8', DATE'2020-2-23',DATE'2020-11-12');
+insert into asignacion values('106','22','12.8', DATE'2017-5-1',DATE'2017-8-25');
+insert into asignacion values('107','25','24.6', DATE'2019-9-1',DATE'2019-12-20');
+insert into asignacion values('108','25','23.6', DATE'2020-1-7',DATE'2020-4-30');
+insert into asignacion values('111','22','22.0', DATE'2017-5-1',DATE'2017-8-25');
+insert into asignacion values('112','18','44.0', DATE'2018-6-13',DATE'2018-12-16');
+insert into asignacion values('112','25','41.4', DATE'2020-5-5',DATE'2020-9-25');
+insert into asignacion values('113','22','23.6', DATE'2017-5-1',DATE'2017-8-25');
+insert into asignacion values('114','18','24.6', DATE'2019-3-23',DATE'2019-8-2');
+insert into asignacion values('114','25','33.1', DATE'2020-1-7',DATE'2020-4-30');
+insert into asignacion values('115','25','45.8', DATE'2019-9-1',DATE'2019-12-20');
+insert into asignacion values('118','18','45.3', DATE'2019-3-23',DATE'2019-8-2');
+insert into asignacion values('118','25','30.5', DATE'2020-5-5',DATE'2020-9-25');
 
-SELECT nombre_emp
-FROM empleados
-WHERE puestos = 3;
+declare
+  salario puesto.Cargoporhora%type;
+  promedio number(6,2);
+  comparacion BOOLEAN;
+begin
+  select (p.Cargoporhora * a.horascobradas) AS salario
+  into salario
+  from puesto p, asignacion a, empleados e
+  where e.puestos = p.cod_puesto and a.empleado = e.num_emp and e.num_emp = 105;
 
-SELECT COUNT(*) AS total_analistas_sistemas
-FROM empleados
-WHERE puestos = 4;
+  select AVG(p.Cargoporhora * a.horascobradas) as promedio
+  into promedio
+  from puesto p, asignacion a, empleados e
+  where e.puestos = p.cod_puesto and a.empleado = e.num_emp and e.num_emp = 105
+  group by e.num_emp;
 
-SELECT P.nombre_proyect, E.nombre_emp, SUM(PU.Cargoporhora * A.horascobradas) AS cargo_total
-FROM proyecto P
-INNER JOIN empleados E ON P.lider = E.num_emp
-INNER JOIN asignacion A ON P.num_proyect = A.numproyecto
-INNER JOIN puesto PU ON E.puestos = PU.cod_puesto
-GROUP BY P.nombre_proyect, E.nombre_emp;
+  comparacion := salario < promedio;
+  if comparacion = True then
+    DBMS_OUTPUT.PUT_LINE('El salario es mayor');
+  else
+    DBMS_OUTPUT.PUT_LINE('El salario es menor o igual');
+  end if;
+end;
+/
+SELECT e.nombre_emp AS "EMPLEADOS", e.nombre_emp AS "LIDER"
+FROM empleados e,proyecto p
+JOIN empleados e ON p.lider = e.num_emp
+WHERE e.nombre_emp = 'Delbert K Joenbrood';
 
+SELECT e.nombre_emp AS "EMPLEADOS"
+FROM empleados e,proyecto p
+WHERE p.lider = (
+    SELECT num_emp as "lider"
+    FROM empleados
+    WHERE nombre_emp = 'Delbert K Joenbrood'
+);
+SELECT e1.nombre_emp AS "EMPLEADOS", e2.nombre_emp AS "LIDER"
+FROM empleados e1,proyecto p
+INNER JOIN empleados e2 ON p.lider = e2.num_emp
+WHERE e2.nombre_emp = 'Delbert K Joenbrood';
 
-select * from puesto;
-select * from empleados;
-select * from proyecto;
-select * from asignacion;
+SELECT e.nombre_emp AS "EMPLEADOS", p.nombre_puesto AS "PUESTO", p.Cargoporhora AS "SALARIO"
+FROM empleados e
+INNER JOIN puesto p ON e.puestos = p.cod_puesto
+WHERE p.nombre_puesto = (SELECT puesto.nombre_puesto FROM empleados, puesto WHERE empleados.nombre_emp = 'Maria D Alonzo' AND empleados.puestos = puesto.cod_puesto)
+AND p.Cargoporhora > (SELECT puesto.Cargoporhora FROM empleados, puesto WHERE empleados.nombre_emp = 'Maria D Alonzo' AND empleados.puestos = puesto.cod_puesto)
+AND e.nombre_emp = 'Maria D Alonzo';
+
+SELECT SUM(a.horascobradas) AS "HORAS_EVERGREEN"
+FROM asignacion a
+INNER JOIN proyecto p ON a.numproyecto = p.num_proyect
+WHERE p.nombre_proyect = 'Evergreen';
+
+SELECT COUNT(*) AS "HORAS_SUPERIORES"
+FROM asignacion a
+WHERE a.horascobradas > (
+    SELECT SUM(horascobradas)
+    FROM asignacion
+    WHERE numproyecto = '15'
+);
+
+SELECT e.nombre_emp AS "EMPLEADO",
+       p.nombre_proyect AS "PROYECTO",
+       SUM(a.horascobradas * pu.Cargoporhora) AS "PRESUPUESTO"
+FROM empleados e
+INNER JOIN asignacion a ON e.num_emp = a.empleado
+INNER JOIN proyecto p ON a.numproyecto = p.num_proyect
+INNER JOIN puesto pu ON e.puestos = pu.cod_puesto
+GROUP BY e.nombre_emp, p.nombre_proyect
+HAVING SUM(a.horascobradas * pu.Cargoporhora) > (
+    SELECT SUM(a.horascobradas * pu.Cargoporhora)
+    FROM asignacion a
+    INNER JOIN proyecto p ON a.numproyecto = p.num_proyect
+    INNER JOIN puesto pu ON e.puestos = pu.cod_puesto
+    WHERE p.nombre_proyect = 'Evergreen'
+)
+ORDER BY "EMPLEADO", "PROYECTO";
+
+SELECT e.nombre_emp AS "EMPLEADO",
+       p.nombre_proyect AS "PROYECTO",
+       SUM(a.horascobradas * pu.Cargoporhora) AS "PRESUPUESTO"
+FROM empleados e
+INNER JOIN asignacion a ON e.num_emp = a.empleado
+INNER JOIN proyecto p ON a.numproyecto = p.num_proyect
+INNER JOIN puesto pu ON e.puestos = pu.cod_puesto
+GROUP BY e.nombre_emp, p.nombre_proyect
+HAVING SUM(a.horascobradas * pu.Cargoporhora) > (
+    SELECT SUM(a2.horascobradas * pu2.Cargoporhora)
+    FROM asignacion a2
+    INNER JOIN proyecto p2 ON a2.numproyecto = p2.num_proyect
+    INNER JOIN puesto pu2 ON e.puestos = pu2.cod_puesto
+    WHERE p2.nombre_proyect = 'Evergreen'
+)
+ORDER BY "EMPLEADO", "PROYECTO";
+
+SELECT e.nombre_emp AS "EMPLEADO",
+       p.nombre_proyect AS "PROYECTO",
+       SUM(a.horascobradas * pu.Cargoporhora) AS "PRESUPUESTO"
+FROM empleados e
+INNER JOIN asignacion a ON e.num_emp = a.empleado
+INNER JOIN proyecto p ON a.numproyecto = p.num_proyect
+INNER JOIN puesto pu ON e.puestos = pu.cod_puesto
+GROUP BY e.nombre_emp, p.nombre_proyect
+HAVING SUM(a.horascobradas * pu.Cargoporhora) > (
+    SELECT SUM(a2.horascobradas * pu2.Cargoporhora)
+    FROM asignacion a2
+    INNER JOIN proyecto p2 ON a2.numproyecto = p2.num_proyect
+    INNER JOIN empleados e2 ON e2.num_emp = a2.empleado  -- Corregir esta línea
+    INNER JOIN puesto pu2 ON e2.puestos = pu2.cod_puesto
+    WHERE p2.nombre_proyect = 'Evergreen'
+)
+ORDER BY "EMPLEADO", "PROYECTO";
