@@ -1,0 +1,160 @@
+--4-9 ejercicio
+Ejercicio 4-9:
+En este ejercicio, se utiliza un bucle LOOP sin etiquetas para incrementar la variable x hasta que x sea mayor que 3. La instrucción EXIT se utiliza para salir del bucle cuando x es mayor que 3. Luego, se imprime un mensaje después de la salida del bucle.
+DECLARE
+ x NUMBER := 0;
+BEGIN
+ LOOP
+ DBMS_OUTPUT.PUT_LINE ('interior loop: x = ' || TO_CHAR(x));
+ x := x + 1;
+ IF x > 3 THEN
+ EXIT;
+ END IF;
+ END LOOP;
+ -- Después de EXIT, el control se reanuda aquí
+ DBMS_OUTPUT.PUT_LINE(' despues del loop: x = ' || TO_CHAR(x));
+END;
+
+--4-10 ejercicio
+
+DECLARE
+ x NUMBER := 0;
+BEGIN
+ LOOP
+ DBMS_OUTPUT.PUT_LINE('interior loop: x = ' || TO_CHAR(x));
+ x := x + 1; -- Evita el bucle infinito
+ EXIT WHEN x > 3;
+ END LOOP;
+ -- Después de la instrucción EXIT, el control se reanuda aquí
+ DBMS_OUTPUT.PUT_LINE('despues del loop: x = ' || TO_CHAR(x));
+END;
+
+--4-11 ejercicio
+DECLARE
+ s PLS_INTEGER := 0;
+ i PLS_INTEGER := 0;
+ j PLS_INTEGER;
+BEGIN
+ <<outer_loop>>
+ LOOP
+ i := i + 1;
+ j := 0;
+ <<inner_loop>>
+ LOOP
+ j := j + 1;
+ s := s + i * j; -- Suma varios productos
+ EXIT inner_loop WHEN (j > 5);
+ EXIT outer_loop WHEN ((i * j) > 15);
+ END LOOP inner_loop;
+ END LOOP outer_loop;
+ DBMS_OUTPUT.PUT_LINE
+ ('La suma de los productos es igual a: ' || TO_CHAR(s));
+END;
+/
+--4-12 ejercicio
+DECLARE
+ i PLS_INTEGER := 0;
+ j PLS_INTEGER := 0;
+BEGIN
+ LOOP
+ i := i + 1;
+ DBMS_OUTPUT.PUT_LINE ('i = ' || i);
+ 
+ LOOP
+ j := j + 1;
+ DBMS_OUTPUT.PUT_LINE ('j = ' || j);
+ EXIT WHEN (j > 3);
+ END LOOP;
+ DBMS_OUTPUT.PUT_LINE ('Salió del interior loop');
+ EXIT WHEN (i > 2);
+ END LOOP;
+ DBMS_OUTPUT.PUT_LINE ('Salida exterior loop');
+end;
+/
+--4-13 ejercicio
+DECLARE
+ x NUMBER := 0;
+BEGIN
+ LOOP -- Después de la instrucción CONTINUE, el control se reanuda aquí
+ DBMS_OUTPUT.PUT_LINE ('interior loop: x = ' || TO_CHAR(x));
+ x := x + 1;
+ IF x < 3 THEN
+ CONTINUE;
+ END IF;
+ DBMS_OUTPUT.PUT_LINE
+ ('interior loop, despues de CONTINUE: x = ' || TO_CHAR(x));
+ EXIT WHEN x = 5;
+ END LOOP;
+ DBMS_OUTPUT.PUT_LINE (' despues del loop: x = ' || TO_CHAR(x));
+END;
+/
+--4-14 ejercicio
+DECLARE
+ x NUMBER := 0;
+BEGIN
+ LOOP -- After CONTINUE statement, control resumes here
+ DBMS_OUTPUT.PUT_LINE ('interior loop: x = ' || TO_CHAR(x));
+ x := x + 1;
+ CONTINUE WHEN x < 3;
+ DBMS_OUTPUT.PUT_LINE
+ ('interior loop, despues de CONTINUE: x = ' || TO_CHAR(x));
+ EXIT WHEN x = 5;
+ END LOOP;
+ DBMS_OUTPUT.PUT_LINE (' despues de loop: x = ' || TO_CHAR(x));
+END;
+/
+--tabla de multiplicar
+    
+DECLARE
+   multiplicando NUMBER := 5;
+   multiplicador NUMBER := 1;
+BEGIN
+   LOOP
+      EXIT WHEN multiplicador > 10;
+      DBMS_OUTPUT.PUT_LINE(multiplicando || ' x ' || multiplicador || ' = ' || multiplicando * multiplicador);
+      multiplicador := multiplicador + 1;
+   END LOOP;
+END;
+/
+    --tabla de multiplicar del 1 al 10 
+    -- utiliza dos bucles anidados para imprimir las tablas de multiplicar del 1 al 10. El bucle exterior varía el multiplicando de 1 a 10, y el bucle interior varía el multiplicador de 1 a 10 para cada multiplicando. Cada producto se imprime en la salida.
+DECLARE
+   multiplicando NUMBER := 1;
+   multiplicador NUMBER := 1;
+BEGIN
+   LOOP
+      EXIT WHEN multiplicando > 10;
+      multiplicador := 1;
+      LOOP
+         EXIT WHEN multiplicador > 10;
+         DBMS_OUTPUT.PUT_LINE(multiplicando || ' x ' || multiplicador || ' = ' || multiplicando * multiplicador);
+         multiplicador := multiplicador + 1;
+      END LOOP;
+      multiplicando := multiplicando + 1;
+   END LOOP;
+END;
+/
+
+
+En cada ejercicio explica el funcionamiento de la instrucción EXIT y EXIT WHEN
+En cada ejercicio explica el funcionamiento de la instrucción CONTINUE y CONTINUE WHEN 
+Explica el funcionamiento de los bucles internos y externos, con y sin etiqueta
+Implementa un bloque anónimo para programar cualquier tabla de multiplicar
+Implementa un bloque anónimo para programar en un bucle anidado las tablas de multiplicar del 1 al 10. Explicando el funcionamiento de las iteraciones.
+Ejercicio 4-9:
+En este ejercicio, se utiliza un bucle LOOP sin etiquetas para incrementar la variable x hasta que x sea mayor que 3. La instrucción EXIT se utiliza para salir del bucle cuando x es mayor que 3. Luego, se imprime un mensaje después de la salida del bucle.
+
+Ejercicio 4-10:
+Este ejercicio es similar al anterior, pero en lugar de usar EXIT para salir del bucle, se usa EXIT WHEN con una condición directamente en la declaración del bucle. El bucle se ejecutará mientras la condición x > 3 sea falsa y, una vez que se vuelva verdadera, el bucle se detendrá automáticamente. Luego, se imprime un mensaje después de la salida del bucle.
+
+Ejercicio 4-11:
+En este ejercicio, se utilizan etiquetas (<<outer_loop>> y <<inner_loop>>) para identificar bucles anidados. El bucle exterior (outer_loop) se ejecuta mientras (i * j) <= 15. El bucle interno (inner_loop) se ejecuta mientras j <= 5. La instrucción EXIT inner_loop se utiliza para salir del bucle interno cuando j supera 5, y la instrucción EXIT outer_loop se utiliza para salir del bucle externo cuando (i * j) supera 15. Al final, se muestra la suma de los productos.
+
+Ejercicio 4-12:
+Este ejercicio utiliza bucles anidados sin etiquetas. El bucle exterior se ejecuta mientras i es menor o igual a 2. El bucle interior se ejecuta mientras j es menor o igual a 3. Las instrucciones EXIT WHEN se utilizan para salir de los bucles en función de las condiciones especificadas. Se muestran mensajes cuando se sale de los bucles.
+
+Ejercicio 4-13:
+En este ejercicio, se utiliza la instrucción CONTINUE para omitir el resto de las iteraciones del bucle actual cuando x es menor que 3. Luego, se muestra un mensaje después de la instrucción CONTINUE. El bucle continúa su ejecución normalmente después de la instrucción CONTINUE. El bucle se detendrá cuando x sea igual a 5.
+
+Ejercicio 4-14:
+Este ejercicio es similar al anterior, pero en lugar de usar EXIT, se utiliza CONTINUE con una condición directamente en la declaración del bucle. La instrucción CONTINUE WHEN permite omitir el resto de las iteraciones del bucle actual si x es menor que 3. Luego, se muestra un mensaje después de la instrucción CONTINUE. El bucle continuará su ejecución normalmente después de la instrucción CONTINUE. El bucle se detendrá cuando x sea igual a 5.
