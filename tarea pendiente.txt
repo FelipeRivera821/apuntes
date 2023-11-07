@@ -1,0 +1,31 @@
+CREATE OR REPLACE PROCEDURE CalcularPresupuestoYDuracion(p_num_proyecto IN NUMBER) AS
+    v_presupuesto_asignado NUMBER;
+    v_fecha_inicio DATE;
+    v_fecha_termino DATE;
+    v_duracion_meses NUMBER;
+BEGIN
+    -- Obtener el presupuesto asignado y las fechas de inicio y termino del proyecto
+    SELECT SUM(horascobradas * Cargoporhora)
+    INTO v_presupuesto_asignado
+    FROM asignacion a
+    JOIN empleado e ON a.empleado = e.num_emp
+    JOIN puesto p ON e.puestos = p.cod_puesto
+    WHERE a.numproyecto = p_num_proyecto;
+
+    SELECT MIN(fechainicio), MAX(fechatermino)
+    INTO v_fecha_inicio, v_fecha_termino
+    FROM asignacion
+    WHERE numproyecto = p_num_proyecto;
+
+    -- Calcular la duración en meses
+    v_duracion_meses := MONTHS_BETWEEN(v_fecha_termino, v_fecha_inicio);
+
+    -- Mostrar el resultado
+    DBMS_OUTPUT.PUT_LINE('Presupuesto asignado para el proyecto ' || p_num_proyecto || ': $' || v_presupuesto_asignado);
+    DBMS_OUTPUT.PUT_LINE('Duración del proyecto: ' || v_duracion_meses || ' meses');
+END CalcularPresupuestoYDuracion;
+/
+BEGIN
+    CalcularPresupuestoYDuracion(15); -- Cambia el número de proyecto según tus necesidades
+END;
+/
