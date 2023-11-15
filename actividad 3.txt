@@ -1,0 +1,113 @@
+CREATE FUNCTION check_sal RETURN Boolean IS 
+v_dept_id employees.department_id%TYPE; 
+v_empno employees.employee_id%TYPE; 
+v_sal employees.salary%TYPE; v_avg_sal employees.salary%TYPE; 
+BEGIN v_empno:=205;
+SELECT salary,department_id INTO v_sal,v_dept_id FROM
+    employees 
+    WHERE employee_id= v_empno;
+SELECT avg(salary) INTO v_avg_sal FROM employees WHERE
+    department_id=v_dept_id; 
+IF v_sal > v_avg_sal THEN 
+    RETURN TRUE;
+ELSE 
+    RETURN FALSE;
+END IF;
+EXCEPTION  WHEN NO_DATA_FOUND THEN RETURN NULL; END;
+
+BEGIN IF (check_sal IS NULL) THEN
+    DBMS_OUTPUT.PUT_LINE('The function returned NULL due to exception');
+ELSIF (check_sal) THEN
+    DBMS_OUTPUT.PUT_LINE('Salary > average');
+ELSE 
+    DBMS_OUTPUT.PUT_LINE('Salary < average'); 
+END IF;
+END; 
+/
+
+DROP FUNCTION check_sal;
+CREATE FUNCTION check_sal(p_empno employees.employee_id%TYPE)
+    RETURN Boolean IS
+    v_dept_id employees.department_id%TYPE;
+v_sal employees.salary%TYPE;
+v_avg_sal employees.salary%TYPE;
+BEGIN
+    SELECT salary,department_id INTO v_sal,v_dept_id FROM employees
+    WHERE employee_id=p_empno;
+SELECT avg(salary) INTO v_avg_sal FROM employees
+    WHERE department_id=v_dept_id;
+IF v_sal > v_avg_sal THEN
+    RETURN TRUE;
+ELSE
+    RETURN FALSE;
+END IF;
+EXCEPTION 
+  WHEN NO_DATA_FOUND THEN
+    RETURN NULL;
+END;
+
+
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Checking for employee with id 205');
+IF (check_sal(205) IS NULL) THEN
+DBMS_OUTPUT.PUT_LINE('The function returned NULL due to exception');
+ELSIF (check_sal(205)) THEN
+DBMS_OUTPUT.PUT_LINE('Salary > average');
+ELSE
+DBMS_OUTPUT.PUT_LINE('Salary < average');
+END IF;
+DBMS_OUTPUT.PUT_LINE('Checking for employee with id 70');
+IF (check_sal(70) IS NULL) THEN
+DBMS_OUTPUT.PUT_LINE('The function returned NULL due to exception');
+ELSIF (check_sal(70)) THEN
+    DBMS_OUTPUT.PUT_LINE('Salary > average');
+ELSE
+DBMS_OUTPUT.PUT_LINE('Salary < average');
+END IF; 
+END;
+/
+
+CREATE OR REPLACE PROCEDURE ajustar_salario(p_employee_id IN NUMBER)
+IS
+  v_anios_trabajados NUMBER;
+  v_incremento_salario NUMBER;
+  v_salario_actual NUMBER;
+BEGIN
+  -- Obtener los años trabajados y salario actual del empleado
+  SELECT calcular_anios_trabajados(hire_date), salary
+    INTO v_anios_trabajados, v_salario_actual
+    FROM employees
+    WHERE employee_id = p_employee_id;
+  -- Determinar el incremento de salario usando CASE
+  CASE
+    WHEN v_anios_trabajados >= 25 THEN
+      v_incremento_salario := 0.10;
+    WHEN v_anios_trabajados >= 20 THEN
+      v_incremento_salario := 0.08;
+    WHEN v_anios_trabajados >= 15 THEN
+      v_incremento_salario := 0.06;
+    WHEN v_anios_trabajados >= 10 THEN
+      v_incremento_salario := 0.04;
+    WHEN v_anios_trabajados >= 5 THEN
+      v_incremento_salario := 0.02;
+    ELSE
+      v_incremento_salario := 0;
+  END CASE;
+  -- Aplicar el incremento al salario
+  v_salario_actual := v_salario_actual * (1 + v_incremento_salario);
+  -- Actualizar el salario en la tabla
+  UPDATE employees
+    SET salary = v_salario_actual
+    WHERE employee_id = p_employee_id;
+  COMMIT;
+END ajustar_salario;
+/
+
+
+-- Crear la tabla quinquenio
+CREATE TABLE quinquenio AS
+SELECT *
+FROM employees
+WHERE calcular_anios_trabajados(hire_date) > 20;
+-- Mostrar los datos de la tabla quinquenio
+SELECT * FROM quinquenio;
